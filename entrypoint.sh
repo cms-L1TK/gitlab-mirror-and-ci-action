@@ -48,8 +48,6 @@ branch="$(git symbolic-ref --short HEAD)"
 branch_uri="$(urlencode ${branch})"
 echo "IAN BRANCH $branch AND $branch_uri"
 
-RETURN_ARG="FAHHKAFKLJLSA"
-
 if [[ ${REBASE_MASTER:-"false"} == "true" ]]; then # Check if variable exists and is true
     git rebase origin/master
 fi
@@ -70,11 +68,14 @@ sh -c "git push mirror $branch"
 sleep $POLL_TIMEOUT
 
 pipeline_id=$(curl --header "PRIVATE-TOKEN: $GITLAB_PASSWORD" --silent "https://${GITLAB_HOSTNAME}/api/v4/projects/${GITLAB_PROJECT_ID}/repository/commits/${branch_uri}" | jq '.last_pipeline.id')
+pipeline_url="$mirror_repo/-/pipelines/${pipeline_id}"
 
 echo "Triggered CI for branch ${branch}"
 echo "Working with pipeline id #${pipeline_id}"
-echo "Pipeline URL: $*/-/pipelines/${pipeline_id}"
+echo "Pipeline URL: $pipeline_url"
 echo "Poll timeout set to ${POLL_TIMEOUT}"
+
+echo "$pipeline_url" > $RETURN_FILE
 
 ci_status="pending"
 
