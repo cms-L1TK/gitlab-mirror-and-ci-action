@@ -28,7 +28,8 @@ POLL_TIMEOUT=${POLL_TIMEOUT:-$DEFAULT_POLL_TIMEOUT}
 
 DEFAULT_GITHUB_REF=${GITHUB_REF:11}
 
-mirror_repo="$*"
+#mirror_repo="$*"
+mirror_repo="$MIRROR_REPO"
 
 echo "IAN SHITA $DEFAULT_GITHUB_REF"
 echo "IAN SHITB $CHECKOUT_BRANCH"
@@ -58,7 +59,7 @@ if [[ ${REMOVE_BRANCH:-"false"} == "true" ]]; then # Check if variable exists an
    branchExists=$(git ls-remote $(git remote get-url --push mirror) ${CHECKOUT_BRANCH:-$DEFAULT_GITHUB_REF} | wc -l)
    if [[ "${branchExists}" == "1" ]]; then
       echo "removing the ${branch} branch at $(git remote get-url --push mirror)"
-      git push mirror --delete ${branch}
+      sh -c "git push mirror --delete ${branch}"
    fi
 fi        
 
@@ -75,6 +76,7 @@ echo "Working with pipeline id #${pipeline_id}"
 echo "Pipeline URL: $pipeline_url"
 echo "Poll timeout set to ${POLL_TIMEOUT}"
 
+# Is this the only way to return the pipeline URL to the calling .yml job?
 echo "$pipeline_url" > $RETURN_FILE
 
 ci_status="pending"
