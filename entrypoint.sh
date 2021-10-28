@@ -48,6 +48,8 @@ branch="$(git symbolic-ref --short HEAD)"
 branch_uri="$(urlencode ${branch})"
 echo "IAN BRANCH $branch AND $branch_uri"
 
+RETURN_ARG = "FAHHKAFKLJLSA"
+
 if [["${REBASE_MASTER:-'false'}" == "true"]]; then # Check if variable exists and is true
     git rebase origin/master
 fi
