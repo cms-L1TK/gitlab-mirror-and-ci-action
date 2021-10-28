@@ -1,6 +1,11 @@
 #!/bin/sh
 
-set -u
+# Error handling
+set -eo pipefail
+# set -e : Instructs bash to immediately exit if any command has a non-zero exit status.
+# (not active) set -u : Reference to any variable not previously defined - with the exceptions of $* and $@ - is an error
+# set -o pipefail : Prevents errors in a pipeline from being masked.
+
 ##################################################################
 urlencode() (
     i=1
@@ -16,16 +21,19 @@ urlencode() (
         i=$(( i + 1 ))
     done
 )
-
 ##################################################################
+
 DEFAULT_POLL_TIMEOUT=10
 POLL_TIMEOUT=${POLL_TIMEOUT:-$DEFAULT_POLL_TIMEOUT}
 
-git checkout "${GITHUB_REF:11}"
+DEFAULT_GITHUB_REF=${GITHUB_REF:11}
 
-branch="$(git symbolic-ref --short HEAD)"
-branch_uri="$(urlencode ${branch})"
+echo "IAN SHITA $DEFAULT_GITHUB_REF"
+echo "IAN SHITB $CHECKOUT_BRANCH"
+echo "IAN GITHUB ${CHECKOUT_BRANCH:-$DEFAULT_GITHUB_REF}"
 
+sh -c "git config --global user.name $GITLAB_USERNAME"
+sh -c "git config --global user.email ${GITLAB_USERNAME}@${GITLAB_HOSTNAME}"
 sh -c "git config --global credential.username $GITLAB_USERNAME"
 sh -c "git config --global core.askPass /cred-helper.sh"
 sh -c "git config --global credential.helper cache"
@@ -33,12 +41,31 @@ sh -c "git remote add mirror $*"
 sh -c "echo pushing to $branch branch at $(git remote get-url --push mirror)"
 sh -c "git push mirror $branch"
 
+git checkout "${CHECKOUT_BRANCH:-$DEFAULT_GITHUB_REF}"
+branch="$(git symbolic-ref --short HEAD)"
+branch_uri="$(urlencode ${branch})"
+echo "IAN BRANCH $branch AND $branch_uri"
+
+if [[ -n "${REBASE_MASTER}" ]] && [[ "${REBASE_MASTER}" == "true" ]]; then # Check if variable exists and is true
+    git rebase origin/master
+fi
+
+if [[ -n "${REMOVE_BRANCH}" ]] && [[ "${REMOVE_BRANCH}" == "true" ]]; then # Check if variable exists and is true
+   # If branch exists
+   branchExists=$(git ls-remote $(git remote get-url --push mirror) ${CHECKOUT_BRANCH:-$DEFAULT_GITHUB_REF} | wc -l)
+   if [[ "${branchExists}" == "1" ]]; then
+      echo "removing the ${branch} branch at $(git remote get-url --push mirror)"
+      git push mirror --delete ${branch}
+   fi
+fi        
+
 sleep $POLL_TIMEOUT
 
 pipeline_id=$(curl --header "PRIVATE-TOKEN: $GITLAB_PASSWORD" --silent "https://${GITLAB_HOSTNAME}/api/v4/projects/${GITLAB_PROJECT_ID}/repository/commits/${branch_uri}" | jq '.last_pipeline.id')
 
 echo "Triggered CI for branch ${branch}"
 echo "Working with pipeline id #${pipeline_id}"
+echo "Pipeline URL: $*/-/pipelines/${pipeline_id}"
 echo "Poll timeout set to ${POLL_TIMEOUT}"
 
 ci_status="pending"
