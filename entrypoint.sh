@@ -28,10 +28,12 @@ POLL_TIMEOUT=${POLL_TIMEOUT:-$DEFAULT_POLL_TIMEOUT}
 
 DEFAULT_GITHUB_REF=${GITHUB_REF:11}
 
+mirror_repo="$*"
+
 echo "IAN SHITA $DEFAULT_GITHUB_REF"
 echo "IAN SHITB $CHECKOUT_BRANCH"
 echo "IAN GITHUB ${CHECKOUT_BRANCH:-$DEFAULT_GITHUB_REF}"
-echo "IAN WIERD $*"
+echo "IAN MIRROR $mirror_repo"
 
 sh -c "git config --global user.name $GITLAB_USERNAME"
 sh -c "git config --global user.email ${GITLAB_USERNAME}@${GITLAB_HOSTNAME}"
@@ -40,17 +42,17 @@ sh -c "git config --global core.askPass /cred-helper.sh"
 sh -c "git config --global credential.helper cache"
 
 git checkout "${CHECKOUT_BRANCH:-$DEFAULT_GITHUB_REF}"
-sh -c "git remote add mirror $*"
+sh -c "git remote add mirror $mirror_repo"
 
 branch="$(git symbolic-ref --short HEAD)"
 branch_uri="$(urlencode ${branch})"
 echo "IAN BRANCH $branch AND $branch_uri"
 
-if [[ -n "${REBASE_MASTER}" ]] && [[ "${REBASE_MASTER}" == "true" ]]; then # Check if variable exists and is true
+if [["${REBASE_MASTER:-false}" == "true"]]; then # Check if variable exists and is true
     git rebase origin/master
 fi
 
-if [[ -n "${REMOVE_BRANCH}" ]] && [[ "${REMOVE_BRANCH}" == "true" ]]; then # Check if variable exists and is true
+if [[ "${REMOVE_BRANCH:-false}" == "true" ]]; then # Check if variable exists and is true
    # If branch exists
    branchExists=$(git ls-remote $(git remote get-url --push mirror) ${CHECKOUT_BRANCH:-$DEFAULT_GITHUB_REF} | wc -l)
    if [[ "${branchExists}" == "1" ]]; then
