@@ -50,12 +50,12 @@ echo "IAN BRANCH $branch AND $branch_uri"
 
 RETURN_ARG="FAHHKAFKLJLSA"
 
-if [["${REBASE_MASTER:-'false'}" == "true"]]; then # Check if variable exists and is true
+if [[ ${REBASE_MASTER:-"false"} == "true" ]]; then # Check if variable exists and is true
     git rebase origin/master
 fi
 
 # Removing and readding branch on mirror triggers CI there.
-if [[ "${REMOVE_BRANCH:-'false'}" == "true" ]]; then # Check if variable exists and is true
+if [[ ${REMOVE_BRANCH:-"false"} == "true" ]]; then # Check if variable exists and is true
    # If branch exists
    branchExists=$(git ls-remote $(git remote get-url --push mirror) ${CHECKOUT_BRANCH:-$DEFAULT_GITHUB_REF} | wc -l)
    if [[ "${branchExists}" == "1" ]]; then
