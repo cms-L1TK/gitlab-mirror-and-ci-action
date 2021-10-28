@@ -31,17 +31,17 @@ DEFAULT_GITHUB_REF=${GITHUB_REF:11}
 echo "IAN SHITA $DEFAULT_GITHUB_REF"
 echo "IAN SHITB $CHECKOUT_BRANCH"
 echo "IAN GITHUB ${CHECKOUT_BRANCH:-$DEFAULT_GITHUB_REF}"
+echo "IAN WIERD $*"
 
 sh -c "git config --global user.name $GITLAB_USERNAME"
 sh -c "git config --global user.email ${GITLAB_USERNAME}@${GITLAB_HOSTNAME}"
 sh -c "git config --global credential.username $GITLAB_USERNAME"
 sh -c "git config --global core.askPass /cred-helper.sh"
 sh -c "git config --global credential.helper cache"
-sh -c "git remote add mirror $*"
-sh -c "echo pushing to $branch branch at $(git remote get-url --push mirror)"
-sh -c "git push mirror $branch"
 
 git checkout "${CHECKOUT_BRANCH:-$DEFAULT_GITHUB_REF}"
+sh -c "git remote add mirror $*"
+
 branch="$(git symbolic-ref --short HEAD)"
 branch_uri="$(urlencode ${branch})"
 echo "IAN BRANCH $branch AND $branch_uri"
@@ -58,6 +58,9 @@ if [[ -n "${REMOVE_BRANCH}" ]] && [[ "${REMOVE_BRANCH}" == "true" ]]; then # Che
       git push mirror --delete ${branch}
    fi
 fi        
+
+sh -c "echo pushing to $branch branch at $(git remote get-url --push mirror)"
+sh -c "git push mirror $branch"
 
 sleep $POLL_TIMEOUT
 
