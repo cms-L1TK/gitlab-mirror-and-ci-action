@@ -45,12 +45,13 @@ sh -c "git config --global credential.helper cache"
 # IAN NOT_CMSSW
 #git checkout "${CHECKOUT_BRANCH:-$DEFAULT_GITHUB_REF}"
 #sh -c "git remote add mirror $mirror_repo"
+#branch="$(git symbolic-ref --short HEAD)"
 # IAN CMSSW
 sh -c "git clone -o mirror -b master $mirror_repo ."
+branch="${CHECKOUT_BRANCH:-$DEFAULT_GITHUB_REF}"
 
 ls -la
 
-branch="$(git symbolic-ref --short HEAD)"
 branch_uri="$(urlencode ${branch})"
 echo "IAN BRANCH $branch AND $branch_uri"
 
