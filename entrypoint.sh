@@ -44,13 +44,11 @@ sh -c "git config --global credential.helper cache"
 
 # IAN NOT_CMSSW
 #git checkout "${CHECKOUT_BRANCH:-$DEFAULT_GITHUB_REF}"
+#sh -c "git remote add mirror $mirror_repo"
 # IAN CMSSW
-git init
+sh -c "git clone -o mirror -b master $mirror_repo ."
 
-sh -c "git remote add mirror $mirror_repo"
-
-# IAN CMSSW
-git clone -b master mirror
+ls -la
 
 branch="$(git symbolic-ref --short HEAD)"
 branch_uri="$(urlencode ${branch})"
@@ -71,7 +69,10 @@ if [[ ${REMOVE_BRANCH:-"false"} == "true" ]]; then # Check if variable exists an
 fi        
 
 sh -c "echo pushing to $branch branch at $(git remote get-url --push mirror)"
-sh -c "git push mirror $branch"
+# IAN NOT CMSSW
+#sh -c "git push mirror $branch"
+# IAN CMSSW
+sh -c "git push mirror master:$branch"
 
 sleep $POLL_TIMEOUT
 
