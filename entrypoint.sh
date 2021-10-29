@@ -36,7 +36,7 @@ sh -c "git config --global credential.username $GITLAB_USERNAME"
 sh -c "git config --global core.askPass /cred-helper.sh"
 sh -c "git config --global credential.helper cache"
 
-if [[ ${IS_CMSSW:-false) == "true ]]; then
+if [[ ${IS_CMSSW:-false) == "true" ]]; then
   # Checkout .gitlab-ci.yml
   sh -c "git clone -o mirror -b master $mirror_repo ."
   branch="${CHECKOUT_BRANCH:-$DEFAULT_GITHUB_REF}"
@@ -68,7 +68,7 @@ if [[ ${REMOVE_BRANCH:-"false"} == "true" ]]; then # Check if variable exists an
 fi        
 
 sh -c "echo pushing to $branch branch at $(git remote get-url --push mirror)"
-if [[ ${IS_CMSSW:-false) == "true ]]; then
+if [[ ${IS_CMSSW:-false) == "true" ]]; then
   # Push to $branch triggers mirror to launch CI for that branch.
   sh -c "git push mirror master:$branch"
 else
