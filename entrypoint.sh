@@ -38,7 +38,7 @@ sh -c "git config --global credential.helper cache"
 
 if [[ ${IS_CMSSW:-false} == "true" ]]; then
   # Checkout .gitlab-ci.yml
-  sh -c "git clone -o mirror -b master $mirror_repo ."
+  sh -c "git clone -o mirror -b masterCI $mirror_repo ."
   branch="${CHECKOUT_BRANCH:-$DEFAULT_GITHUB_REF}"
 else
   git checkout "${CHECKOUT_BRANCH:-$DEFAULT_GITHUB_REF}"
@@ -53,12 +53,14 @@ branch_uri="$(urlencode ${branch})"
 git branch -v
 ls -la
 
-if [[ ${REBASE_MASTER:-"false"} == "true" ]]; then # Check if variable exists and is true
-    git rebase origin/master
+if [[ ${REBASE_MASTER:-"false"} == "true" ]]; then
+   if [[ ${IS_CMSSW:-false} == "false" ]]; then
+      git rebase origin/master
+   fi
 fi
 
 # Removing and readding branch on mirror triggers CI there.
-if [[ ${REMOVE_BRANCH:-"false"} == "true" ]]; then # Check if variable exists and is true
+if [[ ${REMOVE_BRANCH:-"false"} == "true" ]]; then
    # If branch exists
    branchExists=$(git ls-remote $(git remote get-url --push mirror) ${CHECKOUT_BRANCH:-$DEFAULT_GITHUB_REF} | wc -l)
    if [[ "${branchExists}" == "1" ]]; then
@@ -70,7 +72,7 @@ fi
 sh -c "echo pushing to $branch branch at $(git remote get-url --push mirror)"
 if [[ ${IS_CMSSW:-false} == "true" ]]; then
   # Push to $branch triggers mirror to launch CI for that branch.
-  sh -c "git push mirror master:$branch"
+  sh -c "git push mirror masterCI:$branch"
 else
   sh -c "git push mirror $branch"
 fi
