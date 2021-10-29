@@ -42,8 +42,15 @@ sh -c "git config --global credential.username $GITLAB_USERNAME"
 sh -c "git config --global core.askPass /cred-helper.sh"
 sh -c "git config --global credential.helper cache"
 
-git checkout "${CHECKOUT_BRANCH:-$DEFAULT_GITHUB_REF}"
+# IAN NOT_CMSSW
+#git checkout "${CHECKOUT_BRANCH:-$DEFAULT_GITHUB_REF}"
+# IAN CMSSW
+git init
+
 sh -c "git remote add mirror $mirror_repo"
+
+# IAN CMSSW
+git clone -b master mirror
 
 branch="$(git symbolic-ref --short HEAD)"
 branch_uri="$(urlencode ${branch})"
