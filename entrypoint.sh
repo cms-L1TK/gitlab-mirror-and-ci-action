@@ -23,7 +23,8 @@ urlencode() (
 )
 ##################################################################
 
-DEFAULT_POLL_TIMEOUT=10
+# Time interval with which gutlab asked if it has finished CI yet.
+DEFAULT_POLL_TIMEOUT=15
 POLL_TIMEOUT=${POLL_TIMEOUT:-$DEFAULT_POLL_TIMEOUT}
 
 DEFAULT_GITHUB_REF=${GITHUB_REF:11}
@@ -87,10 +88,12 @@ sleep $POLL_TIMEOUT
 pipeline_id=$(curl --header "PRIVATE-TOKEN: $GITLAB_PASSWORD" --silent "https://${GITLAB_HOSTNAME}/api/v4/projects/${GITLAB_PROJECT_ID}/repository/commits/${branch_uri}" | jq '.last_pipeline.id')
 pipeline_url="$mirror_repo/-/pipelines/${pipeline_id}"
 
+echo "Poll timeout set to ${POLL_TIMEOUT}"
 echo "Triggered CI for branch ${branch}"
 echo "Working with pipeline id #${pipeline_id}"
-echo "Pipeline URL: $pipeline_url"
-echo "Poll timeout set to ${POLL_TIMEOUT}"
+echo ""
+echo "--- GITLAB PIPELINE URL: $pipeline_url ---"
+echo ""
 
 # Is this the only way to return the pipeline URL to the calling .yml job?
 echo "$pipeline_url" > $RETURN_FILE
