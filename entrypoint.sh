@@ -73,6 +73,9 @@ fi
 
 sh -c "echo pushing to $branch branch at $(git remote get-url --push mirror)"
 if [[ ${IS_CMSSW:-false} == "true" ]]; then
+  echo $GITHUB_REPOSITORY_OWNER > GITHUB_REPO_OWNER.txt
+  git add GITHUB_REPO_OWNER.txt
+  git commit -m "Inform gitlab about github repo owner"
   # Push to $branch triggers mirror to launch CI for that branch.
   sh -c "git push mirror masterCI:$branch"
 else
