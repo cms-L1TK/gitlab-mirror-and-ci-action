@@ -72,6 +72,8 @@ fi
 
 sh -c "echo pushing to $branch branch at $(git remote get-url --push mirror)"
 if [[ ${IS_CMSSW:-false} == "true" ]]; then
+  # https://docs.gitlab.com/ee/user/project/push_options.html#push-options-for-gitlab-cicd
+  git push -o ci.variable="A_TEST_VAR=SOMETHING_ELSE"
   echo $GITHUB_REPOSITORY_OWNER > GITHUB_REPO_OWNER.txt
   git add GITHUB_REPO_OWNER.txt
   git commit -m "Inform gitlab about github repo owner"
