@@ -75,6 +75,9 @@ if [[ ${IS_CMSSW:-false} == "true" ]]; then
   echo $GITHUB_REPOSITORY_OWNER > GITHUB_REPO_OWNER.txt
   git add GITHUB_REPO_OWNER.txt
   git commit -m "Inform gitlab about github repo owner"
+  echo $L1TRKALGO_CMSSW > L1TRKALGO.txt
+  git add L1TRKALGO.txt
+  git commit -m "Inform gitlab which CMSSW L1 track algorithm to run"
   # Push to $branch triggers mirror to launch CI for that branch.
   sh -c "git push mirror masterCI:$branch"
 else
