@@ -72,8 +72,6 @@ fi
 
 sh -c "echo pushing to $branch branch at $(git remote get-url --push mirror)"
 if [[ ${IS_CMSSW:-false} == "true" ]]; then
-  # https://docs.gitlab.com/ee/user/project/push_options.html#push-options-for-gitlab-cicd
-  git push -o ci.variable="A_TEST_VAR=SOMETHING_ELSE"
   echo $GITHUB_REPOSITORY_OWNER > GITHUB_REPO_OWNER.txt
   git add GITHUB_REPO_OWNER.txt
   git commit -m "Inform gitlab about github repo owner"
@@ -81,7 +79,8 @@ if [[ ${IS_CMSSW:-false} == "true" ]]; then
   git add L1TRKALGO.txt
   git commit -m "Inform gitlab which CMSSW L1 track algorithm to run"
   # Push to $branch triggers mirror to launch CI for that branch.
-  sh -c "git push mirror masterCI:$branch"
+  # -o option explained in https://docs.gitlab.com/ee/user/project/push_options.html#push-options-for-gitlab-cicd
+  sh -c "git push -o ci.variable="A_TEST_VAR=SOMETHING_ELSE" mirror masterCI:$branch"
 else
   sh -c "git push mirror $branch"
 fi
