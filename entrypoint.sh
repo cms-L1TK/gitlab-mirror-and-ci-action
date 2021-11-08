@@ -82,7 +82,7 @@ if [[ ${IS_CMSSW:-false} == "true" ]]; then
   # The -o option here passes the owner-name of the repo where the new branch is located
   # and the L1 track algorithm to be run to gitlab CI.
   # https://docs.gitlab.com/ee/user/project/push_options.html#push-options-for-gitlab-cicd
-  sh -c "git push -o ci.variable="GITHUB_USER_UNDER_TEST=$GITHUB_REPOSITORY_OWNER" -o ci.variable="L1TRKALGO=L1TRKALGO_CMSSW" mirror masterCI:$branch"
+  sh -c "git push -o ci.variable="GITHUB_USER_UNDER_TEST=$GITHUB_REPOSITORY_OWNER" -o ci.variable="L1TRKALGO=$L1TRKALGO_CMSSW" mirror masterCI:$branch"
 else
   sh -c "git push mirror $branch"
 fi
