@@ -72,15 +72,17 @@ fi
 
 sh -c "echo pushing to $branch branch at $(git remote get-url --push mirror)"
 if [[ ${IS_CMSSW:-false} == "true" ]]; then
-  echo $GITHUB_REPOSITORY_OWNER > GITHUB_REPO_OWNER.txt
-  git add GITHUB_REPO_OWNER.txt
-  git commit -m "Inform gitlab about github repo owner"
-  echo $L1TRKALGO_CMSSW > L1TRKALGO.txt
-  git add L1TRKALGO.txt
-  git commit -m "Inform gitlab which CMSSW L1 track algorithm to run"
-  # Push to $branch triggers mirror to launch CI for that branch.
-  # -o option explained in https://docs.gitlab.com/ee/user/project/push_options.html#push-options-for-gitlab-cicd
-  sh -c "git push -o ci.variable="A_TEST_VAR=SOMETHING_ELSE" mirror masterCI:$branch"
+#  echo $GITHUB_REPOSITORY_OWNER > GITHUB_REPO_OWNER.txt
+#  git add GITHUB_REPO_OWNER.txt
+#  git commit -m "Inform gitlab about github repo owner"
+#  echo $L1TRKALGO_CMSSW > L1TRKALGO.txt
+#  git add L1TRKALGO.txt
+#  git commit -m "Inform gitlab which CMSSW L1 track algorithm to run"
+  # Copy .gitlab-ci.yml from branch masterCI to new branch triggers gitlab CI in the latte branch.
+  # The -o option here passes the owner-name of the repo where the new branch is located
+  # and the L1 track algorithm to be run to gitlab CI.
+  # https://docs.gitlab.com/ee/user/project/push_options.html#push-options-for-gitlab-cicd
+  sh -c "git push -o ci.variable="GITHUB_USER_UNDER_TEST=$GITHUB_REPOSITORY_OWNER" -o ci.variable="L1TRKALGO=L1TRKALGO_CMSSW" mirror masterCI:$branch"
 else
   sh -c "git push mirror $branch"
 fi
