@@ -72,18 +72,18 @@ fi
 
 sh -c "echo pushing to $branch branch at $(git remote get-url --push mirror)"
 if [[ ${IS_CMSSW:-false} == "true" ]]; then
-#  echo $GITHUB_REPOSITORY_OWNER > GITHUB_REPO_OWNER.txt
-#  git add GITHUB_REPO_OWNER.txt
-#  git commit -m "Inform gitlab about github repo owner"
-#  echo $L1TRKALGO_CMSSW > L1TRKALGO.txt
-#  git add L1TRKALGO.txt
-#  git commit -m "Inform gitlab which CMSSW L1 track algorithm to run"
   # Copy .gitlab-ci.yml from branch masterCI to new branch triggers gitlab CI in the latte branch.
   # The -o option here passes the owner-name of the repo where the new branch is located
   # and the L1 track algorithm to be run to gitlab CI.
   # https://docs.gitlab.com/ee/user/project/push_options.html#push-options-for-gitlab-cicd
   sh -c "git push -o ci.variable="GITHUB_USER_UNDER_TEST=$GITHUB_REPOSITORY_OWNER" -o ci.variable="L1TRKALGO=$L1TRKALGO_CMSSW" mirror masterCI:$branch"
-else
+  # IDEA FOR FUTURE IMPROVEMENT
+  # Instead of triggering gitlab CI by pushing to branch,
+  # add a web hook https://gitlab.cern.ch/cms-l1tk/cmssw_CI/-/hooks
+  # and trigger it with "curl" (which can also pass variables)
+  # https://gitlab.cern.ch/cms-l1tk/cmssw_CI/-/settings/ci_cd#js-pipeline-triggers
+
+else # not CMSSW
   sh -c "git push mirror $branch"
 fi
 
