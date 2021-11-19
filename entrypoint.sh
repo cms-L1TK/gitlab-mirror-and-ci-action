@@ -57,9 +57,16 @@ fi
 
 echo "mirror repo = $mirror_repo and branch = $branch"
 
+echo "DEBUG a ${branch}"
+
 branch_uri="$(urlencode ${branch})"
 
+echo "DEBUG b"
+
 git branch -v
+
+echo "DEBUG c"
+
 ls -la
 
 echo "DEBUG E"
