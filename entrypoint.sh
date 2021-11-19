@@ -23,8 +23,6 @@ urlencode() (
 )
 ##################################################################
 
-echo "DEBUG A"
-
 # Time interval with which gutlab asked if it has finished CI yet.
 DEFAULT_POLL_TIMEOUT=20
 POLL_TIMEOUT=${POLL_TIMEOUT:-$DEFAULT_POLL_TIMEOUT}
@@ -39,39 +37,24 @@ sh -c "git config --global credential.username $GITLAB_USERNAME"
 sh -c "git config --global core.askPass /cred-helper.sh"
 sh -c "git config --global credential.helper cache"
 
-echo "DEBUG B"
-
 if [[ ${IS_CMSSW:-false} == "true" ]]; then
-  echo "DEBUG C1"
   # Checkout .gitlab-ci.yml
   sh -c "git clone -o mirror -b masterCI $mirror_repo ."
-  echo "DEBUG D1"
   branch="${CHECKOUT_BRANCH:-$DEFAULT_GITHUB_REF}"
 else
-  echo "DEBUG C2"
   git checkout "${CHECKOUT_BRANCH:-$DEFAULT_GITHUB_REF}"
-  echo "DEBUG D2"
   sh -c "git remote add mirror $mirror_repo"
   branch="$(git symbolic-ref --short HEAD)"
 fi
 
 echo "mirror repo = $mirror_repo and branch = $branch"
 
-echo "DEBUG a ${branch}"
-
 # Function urlencode sometimes crashes, so bypass it.
 #branch_uri="$(urlencode ${branch})"
 branch_uri=$branch
 
-echo "DEBUG b"
-
 git branch -v
-
-echo "DEBUG c"
-
 ls -la
-
-echo "DEBUG E"
 
 if [[ ${REBASE_MASTER:-"false"} == "true" ]]; then
    if [[ ${IS_CMSSW:-false} == "false" ]]; then
@@ -79,22 +62,15 @@ if [[ ${REBASE_MASTER:-"false"} == "true" ]]; then
    fi
 fi
 
-echo "DEBUG F"
-
 # Removing and readding branch on mirror triggers CI there.
 if [[ ${REMOVE_BRANCH:-"false"} == "true" ]]; then
    # If branch exists
-   echo "DEBUG G"
    branchExists=$(git ls-remote $(git remote get-url --push mirror) ${CHECKOUT_BRANCH:-$DEFAULT_GITHUB_REF} | wc -l)
-   echo "DEBUG H"
    if [[ "${branchExists}" == "1" ]]; then
       echo "removing the ${branch} branch at $(git remote get-url --push mirror)"
       sh -c "git push mirror --delete ${branch}"
    fi
-   echo "DEBUG I"
 fi        
-
-echo "DEBUG J"
 
 sh -c "echo pushing to $branch branch at $(git remote get-url --push mirror)"
 if [[ ${IS_CMSSW:-false} == "true" ]]; then
