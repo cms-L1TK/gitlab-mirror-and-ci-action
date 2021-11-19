@@ -62,21 +62,30 @@ branch_uri="$(urlencode ${branch})"
 git branch -v
 ls -la
 
+echo "DEBUG E"
+
 if [[ ${REBASE_MASTER:-"false"} == "true" ]]; then
    if [[ ${IS_CMSSW:-false} == "false" ]]; then
       git rebase origin/master
    fi
 fi
 
+echo "DEBUG F"
+
 # Removing and readding branch on mirror triggers CI there.
 if [[ ${REMOVE_BRANCH:-"false"} == "true" ]]; then
    # If branch exists
+   echo "DEBUG G"
    branchExists=$(git ls-remote $(git remote get-url --push mirror) ${CHECKOUT_BRANCH:-$DEFAULT_GITHUB_REF} | wc -l)
+   echo "DEBUG H"
    if [[ "${branchExists}" == "1" ]]; then
       echo "removing the ${branch} branch at $(git remote get-url --push mirror)"
       sh -c "git push mirror --delete ${branch}"
    fi
+   echo "DEBUG I"
 fi        
+
+echo "DEBUG J"
 
 sh -c "echo pushing to $branch branch at $(git remote get-url --push mirror)"
 if [[ ${IS_CMSSW:-false} == "true" ]]; then
