@@ -23,6 +23,8 @@ urlencode() (
 )
 ##################################################################
 
+echo "DEBUG A"
+
 # Time interval with which gutlab asked if it has finished CI yet.
 DEFAULT_POLL_TIMEOUT=20
 POLL_TIMEOUT=${POLL_TIMEOUT:-$DEFAULT_POLL_TIMEOUT}
@@ -37,12 +39,18 @@ sh -c "git config --global credential.username $GITLAB_USERNAME"
 sh -c "git config --global core.askPass /cred-helper.sh"
 sh -c "git config --global credential.helper cache"
 
+echo "DEBUG B"
+
 if [[ ${IS_CMSSW:-false} == "true" ]]; then
+  echo "DEBUG C1"
   # Checkout .gitlab-ci.yml
   sh -c "git clone -o mirror -b masterCI $mirror_repo ."
+  echo "DEBUG D1"
   branch="${CHECKOUT_BRANCH:-$DEFAULT_GITHUB_REF}"
 else
+  echo "DEBUG C2"
   git checkout "${CHECKOUT_BRANCH:-$DEFAULT_GITHUB_REF}"
+  echo "DEBUG D2"
   sh -c "git remote add mirror $mirror_repo"
   branch="$(git symbolic-ref --short HEAD)"
 fi
