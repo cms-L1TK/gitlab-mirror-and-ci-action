@@ -59,7 +59,9 @@ echo "mirror repo = $mirror_repo and branch = $branch"
 
 echo "DEBUG a ${branch}"
 
-branch_uri="$(urlencode ${branch})"
+# Function urlencode sometimes crashes, so bypass it.
+#branch_uri="$(urlencode ${branch})"
+branch_uri=$branch
 
 echo "DEBUG b"
 
