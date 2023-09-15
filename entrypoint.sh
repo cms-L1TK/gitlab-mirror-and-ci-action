@@ -31,6 +31,7 @@ DEFAULT_GITHUB_REF=${GITHUB_REF:11}
 
 mirror_repo="$MIRROR_REPO"
 
+sh -c "git config --global --add safe.directory '*'"
 sh -c "git config --global user.name $GITLAB_USERNAME"
 sh -c "git config --global user.email ${GITLAB_USERNAME}@${GITLAB_HOSTNAME}"
 sh -c "git config --global credential.username $GITLAB_USERNAME"
