@@ -23,8 +23,8 @@ urlencode() (
 )
 ##################################################################
 
-# Time interval with which gutlab asked if it has finished CI yet.
-DEFAULT_POLL_TIMEOUT=20
+# Time interval (secs) with which gutlab asked if it has finished CI yet.
+DEFAULT_POLL_TIMEOUT=60
 POLL_TIMEOUT=${POLL_TIMEOUT:-$DEFAULT_POLL_TIMEOUT}
 
 DEFAULT_GITHUB_REF=${GITHUB_REF:11}
