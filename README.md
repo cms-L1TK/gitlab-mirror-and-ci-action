@@ -2,7 +2,7 @@
 
 ## Use cased by CMS L1 track group
 
-   * CMSSW L1 track development: when someone makes a PR to our CMSSW development L1 track github repo, github CI runs following the instructions in https://github.com/cms-L1TK/cmssw/blob/L1TK-dev-12_0_0_pre4/.github/workflows/github_CI.yml . This calls the script https://github.com/cms-L1TK/gitlab-mirror-and-ci-action , which triggers detailed code checks in https://gitlab.cern.ch/cms-l1tk/cmssw_CI/-/blob/masterCI/.gitlab-ci.yml .
+   * CMSSW L1 track development: when someone makes a PR to our CMSSW development L1 track github repo, github CI runs following the instructions in https://github.com/cms-L1TK/cmssw/blob/L1TK-dev-14_0_0_pre2/.github/workflows/github_CI.yml . This calls the script https://github.com/cms-L1TK/gitlab-mirror-and-ci-action , which triggers detailed code checks in https://gitlab.cern.ch/cms-l1tk/cmssw_CI/-/blob/masterCI/.gitlab-ci.yml .
 
 ## Generic Functionality
 
