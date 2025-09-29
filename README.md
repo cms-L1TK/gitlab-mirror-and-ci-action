@@ -2,7 +2,7 @@
 
 ## Use cased by CMS L1 track group
 
-   * CMSSW L1 track development: when someone makes a PR to our CMSSW development L1 track github repo, github CI runs following the instructions in https://github.com/cms-L1TK/cmssw/blob/L1TK-dev-14_0_0_pre2/.github/workflows/github_CI.yml . This calls the script https://github.com/cms-L1TK/gitlab-mirror-and-ci-action , which triggers detailed code checks in https://gitlab.cern.ch/cms-l1tk/cmssw_CI/-/blob/masterCI/.gitlab-ci.yml .
+   * CMSSW L1 track development: when someone makes a PR to our CMSSW development L1 track github repo, github CI runs following the instructions in https://github.com/cms-L1TK/cmssw/blob/L1TK-dev-12_0_0_pre4/.github/workflows/github_CI.yml . This calls the script https://github.com/cms-L1TK/gitlab-mirror-and-ci-action , which triggers detailed code checks in https://gitlab.cern.ch/cms-l1tk/cmssw_CI/-/blob/masterCI/.gitlab-ci.yml .
 
 ## Generic Functionality
 
@@ -36,5 +36,5 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} // https://docs.github.com/en/actions/reference/authentication-in-a-workflow#about-the-github_token-secret
 ```
 
-First create a token to use as `GITLAB_L1TK_CMSSW_CI_TOKEN_2FA` here `https://gitlab.cern.ch/cms-l1tk/cmssw_CI/-/settings/access_tokens` . You must give this token must have `read_api`, `read_repository` & `write_repository` permissions in GitLab. For granular permissions create seperate users and tokens in GitLab with restricted access. Copy the encoded number this web page gives you. 
+First create a token to use as `GITLAB_L1TK_CMSSW_CI_TOKEN_2FA` here `https://gitlab.cern.ch/cms-l1tk/cmssw_CI/-/settings/access_tokens` . You must assign this token role=developer and scopes = `read_api`, `read_repository` & `write_repository`. For granular permissions create seperate users and tokens in GitLab with restricted access. Copy the encoded number this web page gives you. 
 Then define the token `GITLAB_L1TK_CMSSW_CI_TOKEN_2FA` secret in `https://github.com/cms-L1TK/cmssw/settings/secrets/actions` , copying the encoded number into it. This token name matches the one that the code looks for at https://github.com/cms-L1TK/cmssw/blob/L1TK-dev-13_3_0_pre2/.github/workflows/github_CI.yml#L63 . 
